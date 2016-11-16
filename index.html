@@ -1,0 +1,100 @@
+<html>
+<head>
+<link href="vis.css" rel="stylesheet" type="text/css" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<script type="text/javascript">
+    var nodes = null;
+    var edges = null;
+    var superP = null;
+    var network = null;
+    var setSmooth = false;
+
+    function destroy() {
+      if (network !== null) {
+        network.destroy();
+        network = null;
+      }
+    }
+
+    function draw(){
+      destroy();
+      var nodeCount = document.getElementById('nodeCount').value;
+      var superPeers = document.getElementById('superPeers').value;
+      var messageFrom = document.getElementById('messageFrom').value;
+      var messageTo = document.getElementById('messageTo').value;
+      var container = document.getElementById('mynetwork');
+      var dataReal = newNetwork(nodeCount,superPeers,messageFrom,messageTo);
+      var options = {
+        nodes: {
+        shape: 'dot',
+        scaling: {
+          min: 10,
+          max: 30
+        },
+        font: {
+          size: 12,
+          face: 'Tahoma'
+        }
+      },
+      edges: {
+        width: 0.15,
+        color: {inherit: 'from'},
+        smooth: {
+          type: 'continuous'
+        }
+      },
+      physics: {
+        stabilization: false,
+        barnesHut: {
+          gravitationalConstant: -80000,
+          springConstant: 0.001,
+          springLength: 200
+        }
+      },
+      interaction: {
+        tooltipDelay: 200,
+        hideEdgesOnDrag: true
+      }
+      };
+      network = new vis.Network(container, dataReal, options);
+    };
+  </script>
+
+
+
+<body onload="draw()">
+<p>
+<form onsubmit="draw(); return false;"">
+<label for="nodeCount">Number of nodes:</label>
+<input id="nodeCount" type="text" value=null style="width: 50px;">
+&nbsp;
+<label for="superPeers">Number of Superpeers:</label>
+<input id="superPeers" type="text" value=null style="width: 50px;">
+&nbsp;
+<label for="messageFrom">Message From:</label>
+<input id="messageFrom" type="text" value=null style="width: 50px;">
+&nbsp;
+<label for="messageTo">Message To:</label>
+<input id="messageTo" type="text" value=null style="width: 50px;">
+&nbsp;
+<input type="button" value="Go" onclick="draw(nodeCount,superPeers,messageFrom,messageTo)">
+</form>
+</p>
+
+<div><p> The following blue nodes connect to form the real network, where every node is connect to at least 25% of the other notes randomly.</p></div>
+<div><p> The following red nodes connect to form the overlay network, where every node is a super peer and splits the network up even amongst themselves. </p></div>
+
+<div id="mynetwork"></div>
+<div>
+<div id="message"></div>
+<br/>
+<div id="message2"></div>
+</div>
+
+<script type="text/javascript" src="vis.js"></script>
+<script type="text/javascript" src="app.js"></script>
+
+</body>
+</html>
